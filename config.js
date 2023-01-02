@@ -1,6 +1,6 @@
 module.exports = {
     bot: {
-        admins: ["678993693088415764", "1025425713282695239", "799299809705459813"],
+        admins: [], /*Bot yöneticilerinin idleri*/
         token: ""
     },
     api_keys: {
@@ -9,10 +9,17 @@ module.exports = {
     },
     channels: {
         itemshop: "", /*Günlük içerik mağazasının gönderileceği kanal*/
-        itemshop2: "" /*Başka bir sunucudan gelen içerik mağazası embedlerinin olduğu kanal*/
+        itemshop2: "", /*Başka bir sunucudan gelen içerik mağazası embedlerinin olduğu kanal*/
+        news: "" /*Fortnite haberlerinin gönderileceği kanal*/
     },
     roles: {
         itemshop: "", /*Günlük içerik mağazası gönderildiğinde etiketlenecek rol*/
         reminder: "" /*Günlük içerik mağazası gönderildiğinde hatırlatıcılarındaki kozmetikler içerik mağazasında varsa onları bildirmek için etiketlenecek rol*/
+    },
+    guilds: {
+        main: {
+            id: "",
+            invite: ""
+        }
     }
 }
