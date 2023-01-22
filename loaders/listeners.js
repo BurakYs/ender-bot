@@ -28,14 +28,20 @@ module.exports = async (client) => {
         client.reminder2.get(`${y}`)?.forEach(async x => {
           client.guilds.cache.get(`${client.config.guilds.main.id}`).members.cache.get(x).roles.add(`${client.config.roles.reminder}`)
           client.guilds.cache.get(`${client.config.guilds.main.id}`).members.cache.filter(z => z.roles.cache.has(`${client.config.roles.reminder}`) && z === x).forEach(x => x.roles.remove(`${client.config.roles.reminder}`))
-          client.channels.cache.get(`${client.config.channels.itemshop}`).send({
-            content: `<@&${client.config.roles.reminder}>`,
-            embeds: [
-              new EmbedBuilder()
-                .setColor(resolveColor("#00CCFF"))
-                .setTitle("Hatırlatıcı")
-                .setDescription(`Hatırlatıcınıza eklediğiniz bir veya birden fazla kozmetik şimdi içerik mağazasında!`)]
-          })
+          if (!client.db.has("TEMPDATA")) {
+            client.db.set("TEMPDATA", true)
+            client.channels.cache.get(`${client.config.channels.itemshop}`).send({
+              content: `<@&${client.config.roles.reminder}>`,
+              embeds: [
+                new EmbedBuilder()
+                  .setColor(resolveColor("#00CCFF"))
+                  .setTitle("Hatırlatıcı")
+                  .setDescription(`Hatırlatıcınıza eklediğiniz bir veya birden fazla kozmetik şimdi içerik mağazasında!`)]
+            })
+            setTimeout(() => {
+              client.db.delete("TEMPDATA")
+            }, 120000)
+          }
           if (client.db.has(`mesajaldi_${x}`)) {
             return setTimeout(() => {
               client.db.delete(`mesajaldi_${x}`)
