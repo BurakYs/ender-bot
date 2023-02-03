@@ -134,24 +134,35 @@ module.exports = {
         }
         if (interaction.options.getSubcommand() === "remove") {
             const name = interaction.options.getString("kozmetik");
-            const responsee = await fetch(
-                `https://fortnite-api.com/v2/cosmetics/br/search?name=${name}`,
+            let responsee = await fetch(
+                `https://fortnite-api.com/v2/cosmetics/br/search?name=${name}&language=tr`,
                 {
                     method: "get",
                     headers: {
                         Authorization: client.config.api_keys.fortniteapicom,
                     },
                 }
-            )
-            const { status } = responsee;
-            const response = await responsee.json();
+            );
+            let response = responsee.json()
+            if (responsee.status === 404) {
+                responsee = await fetch(
+                    `https://fortnite-api.com/v2/cosmetics/br/search?name=${name}&searchLanguage=tr&language=tr`,
+                    {
+                        method: "get",
+                        headers: {
+                            Authorization: client.config.api_keys.fortniteapicom,
+                        },
+                    }
+                );
+                response = await responsee.json();
+            }
             if (response.status === 404)
                 return await interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
                             .setTitle("Hata")
                             .setColor("Red")
-                            .setDescription("${titleCase(response?.data?.name)} isminde bir kozmetik bulunamadı."),
+                            .setDescription(`${titleCase(name)} isminde bir kozmetik bulunamadı.`),
                     ],
                 });
             if (response.status === 200) {
@@ -221,8 +232,6 @@ module.exports = {
             return await interaction.editReply({
                 embeds: [embed]
             })
-
-
         }
     },
 };
