@@ -14,20 +14,29 @@ module.exports = {
         .addStringOption((option) => option.setName("kozmetik").setDescription("Kozmetiğin Türkçe adı").setRequired(true)),
     async run(interaction) {
         const kozm = interaction.options.getString("kozmetik")
-        const response = await fetch(`https://fortnite-api.com/v2/cosmetics/br/search/all?name=${kozm}&language=tr`, {
+        let response = await fetch(`https://fortnite-api.com/v2/cosmetics/br/search/all?name=${kozm}&language=tr`, {
             method: 'GET',
             headers: {
                 Authorization: client.config.api_keys.fortniteapicom
             }
         });
 
-        const data = await response.json()
+        let data = await response.json()
         function titleCase(str) {
             var splitStr = str.toLowerCase().split(' ');
             for (var i = 0; i < splitStr.length; i++) {
                 splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
             }
             return splitStr.join(' ');
+        }
+        if ([404, 400].includes(data.status)) {
+            response = await fetch(`https://fortnite-api.com/v2/cosmetics/br/search/all?name=${kozm}&language=tr&searchLanguage=tr`, {
+                method: 'GET',
+                headers: {
+                    Authorization: client.config.api_keys.fortniteapicom
+                }
+            });
+            data = await response.json()
         }
         if ([404, 400].includes(data.status)) return interaction.reply({ embeds: [new EmbedBuilder().setTitle("Hata").setColor("Red").setDescription(`${titleCase(kozm)} isminde bir kozmetik bulunamadı.`)] })
         let color;
